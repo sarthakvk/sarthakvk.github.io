@@ -6,4 +6,4 @@ Hi, I'm Sarthak Kumar — a software engineer.
 
 This is my public notebook: notes, essays, and things I've found worth sharing.
 
-- [[blog]] — writing
+- [[resume.pdf|My Resume]]
