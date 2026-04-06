@@ -2,6 +2,7 @@ import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
 import LinksHeader from "./LinksHeader"
 import SocialFooter from "./SocialFooter"
+import ProfilePhoto from "./ProfilePhoto"
 
 // components shared across all pages
 export const sharedPageComponents: SharedLayout = {
@@ -44,6 +45,10 @@ export const defaultContentPageLayout: PageLayout = {
     Component.Explorer(),
   ],
   right: [
+    Component.ConditionalRender({
+      component: ProfilePhoto(),
+      condition: (page) => page.fileData.slug === "index",
+    }),
     // Removing Graph component for now due to too few pages in the vault
     // Component.Graph()
     Component.DesktopOnly(Component.TableOfContents()),
