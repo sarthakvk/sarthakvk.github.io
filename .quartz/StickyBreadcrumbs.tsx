@@ -35,6 +35,13 @@ StickyBreadcrumbs.css = `
   padding: 0.75rem 0;
 }
 
+.popover .sticky-breadcrumb-spacer,
+.popover .sticky-breadcrumb-shell,
+.preview-inner .sticky-breadcrumb-spacer,
+.preview-inner .sticky-breadcrumb-shell {
+  display: none;
+}
+
 @media all and (max-width: 800px) {
   .sticky-breadcrumb-spacer {
     height: 2.75rem;
