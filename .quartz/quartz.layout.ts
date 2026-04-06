@@ -1,13 +1,13 @@
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
-import LinksHeader from "./LinksHeader"
 import SocialFooter from "./SocialFooter"
 import ProfilePhoto from "./ProfilePhoto"
+import StickyBreadcrumbs from "./StickyBreadcrumbs"
 
 // components shared across all pages
 export const sharedPageComponents: SharedLayout = {
   head: Component.Head(),
-  header: [LinksHeader()],
+  header: [],
   afterBody: [],
   footer: SocialFooter(),
 }
@@ -16,7 +16,7 @@ export const sharedPageComponents: SharedLayout = {
 export const defaultContentPageLayout: PageLayout = {
   beforeBody: [
     Component.ConditionalRender({
-      component: Component.Breadcrumbs(),
+      component: StickyBreadcrumbs(),
       condition: (page) => page.fileData.slug !== "index",
     }),
     Component.ConditionalRender({
