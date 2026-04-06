@@ -10,7 +10,9 @@ publish/
     ├── quartz.layout.ts  # Page layout, components       ← edit this
     ├── LinksHeader.tsx   # Custom nav (Blogs, Resume)    ← user component
     ├── SocialFooter.tsx  # Custom footer (social icons)  ← user component
+    ├── ProfilePhoto.tsx  # Circular profile photo (index only) ← user component
     └── quartz/           # Quartz library source         ← do not modify
+        ├── static/profile.png  # Profile photo asset
         └── styles/custom.scss  # Exception: user CSS (prefer ConditionalRender in layout.ts)
 ```
 
