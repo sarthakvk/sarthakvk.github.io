@@ -6,7 +6,7 @@ import {
   PROFILE_FOCAL_X,
   PROFILE_FOCAL_Y,
   PROFILE_ZOOM,
-} from "./profilePhotoConfig"
+} from "./profileImageConfig"
 
 const FAVICON_SIZE = 96
 const SOURCE_IMAGE_PATH = joinSegments(QUARTZ, "static", "profile.png")

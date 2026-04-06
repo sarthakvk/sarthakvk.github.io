@@ -1,6 +1,6 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./quartz/components/types"
 import { joinSegments, pathToRoot } from "./quartz/util/path"
-import { PROFILE_FOCAL_POSITION, PROFILE_ZOOM } from "./profilePhotoConfig"
+import { PROFILE_FOCAL_POSITION, PROFILE_ZOOM } from "./profileImageConfig"
 
 const ProfilePhoto: QuartzComponent = ({ fileData }: QuartzComponentProps) => {
   const baseDir = pathToRoot(fileData.slug!)
