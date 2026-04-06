@@ -22,10 +22,12 @@ const config: QuartzConfig = {
       fontOrigin: "googleFonts",
       cdnCaching: true,
       typography: {
-        header: "Schibsted Grotesk",
-        body: "Source Sans Pro",
-        code: "IBM Plex Mono",
-      },
+        title: "Cormorant Garamond",
+        header: "EB Garamond",
+        body: "EB Garamond",
+        code: "JetBrains Mono",
+      }
+,
       colors: {
         lightMode: {
           light: "#fbf1c7",

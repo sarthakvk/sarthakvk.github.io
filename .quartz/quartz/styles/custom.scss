@@ -4,3 +4,22 @@
 .center > hr {
   display: none;
 }
+
+body {
+  font-size: 1.08rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+}
+
+h2.page-title {
+  font-variant: normal;
+  letter-spacing: normal;
+}
+
+strong, b {
+  font-weight: 600;
+}

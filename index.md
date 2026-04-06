@@ -3,9 +3,9 @@ title: Home
 ---
 ## Hey, I am Sarthak
 
-#### systems, scale, and real-world impact. keep learning, keep building, keep breaking.
+<p><span style="color: var(--secondary)">Systems, Scale, and Real-World Impact. Keep Learning, Keep Building.</span></p>
 
-I am a software engineer working on backend infrastructure and distributed systems. Over the last two years, I worked at [_Meta Reality Labs_](https://en.wikipedia.org/wiki/Reality_Labs), building infrastructure for large-scale simulations — running across hundreds of machines and generating petabyte-scale data.
+I am a software engineer passionate about backend infrastructure and distributed systems. Over the last two years, I worked at [_Meta Reality Labs_](https://en.wikipedia.org/wiki/Reality_Labs), building infrastructure for large-scale simulations — running across hundreds of machines and generating petabyte-scale data for building ML models.
 
 Before that, I worked in an early-stage startups, building systems from scratch and owning infrastructure end-to-end. That experience shaped how I think about systems — under constraints, ambiguity, and real usage.
 
