@@ -16,7 +16,7 @@ const config: QuartzConfig = {
     enablePopovers: true,
     analytics: null,
     locale: "en-US",
-    baseUrl: "sarthakvk.github.io/secondbrain-public",
+    baseUrl: "sarthakvk.github.io",
     ignorePatterns: ["private", "templates", ".obsidian", ".quartz", ".github", "README.md"],
     defaultDateType: "modified",
     theme: {
