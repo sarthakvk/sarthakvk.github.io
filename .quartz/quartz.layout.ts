@@ -1,19 +1,14 @@
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
 import LinksHeader from "./LinksHeader"
+import SocialFooter from "./SocialFooter"
 
 // components shared across all pages
 export const sharedPageComponents: SharedLayout = {
   head: Component.Head(),
   header: [LinksHeader()],
   afterBody: [],
-  footer: Component.Footer({
-    links: {
-      GitHub: "https://github.com/sarthakvk",
-      LinkedIn: "https://linkedin.com/in/sarthakchaudhary",
-      Email: "mailto:kumar.v.sarthak@gmail.com",
-    },
-  }),
+  footer: SocialFooter(),
 }
 
 // components for pages that display a single page (e.g. a single note)
@@ -23,8 +18,14 @@ export const defaultContentPageLayout: PageLayout = {
       component: Component.Breadcrumbs(),
       condition: (page) => page.fileData.slug !== "index",
     }),
-    Component.ArticleTitle(),
-    Component.ContentMeta(),
+    Component.ConditionalRender({
+      component: Component.ArticleTitle(),
+      condition: (page) => page.fileData.slug !== "index",
+    }),
+    Component.ConditionalRender({
+      component: Component.ContentMeta(),
+      condition: (page) => page.fileData.slug !== "index",
+    }),
     Component.TagList(),
   ],
   left: [
