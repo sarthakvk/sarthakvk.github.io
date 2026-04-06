@@ -1,6 +1,7 @@
 import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
 import * as Component from "./quartz/components"
+import { ProfileFavicon } from "./ProfileFavicon"
 
 /**
  * Quartz 4 Configuration
@@ -86,7 +87,7 @@ const config: QuartzConfig = {
       }),
       Plugin.Assets(),
       Plugin.Static(),
-      Plugin.Favicon(),
+      ProfileFavicon(),
       Plugin.FolderPage({ pageBody: Component.Content() }),
       Plugin.NotFoundPage(),
       // Comment out CustomOgImages to speed up build time

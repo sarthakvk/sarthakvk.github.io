@@ -1,5 +1,6 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./quartz/components/types"
 import { joinSegments, pathToRoot } from "./quartz/util/path"
+import { PROFILE_FOCAL_POSITION, PROFILE_ZOOM } from "./profilePhotoConfig"
 
 const ProfilePhoto: QuartzComponent = ({ fileData }: QuartzComponentProps) => {
   const baseDir = pathToRoot(fileData.slug!)
@@ -32,9 +33,9 @@ ProfilePhoto.css = `
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 53% 38%;
-  transform: scale(4);
-  transform-origin: 53% 38%;
+  object-position: ${PROFILE_FOCAL_POSITION};
+  transform: scale(${PROFILE_ZOOM});
+  transform-origin: ${PROFILE_FOCAL_POSITION};
 }
 `
 
