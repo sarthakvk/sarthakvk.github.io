@@ -99,6 +99,7 @@
 \section{Career Highlights}
 \resumeItemListStart
   \resumeItem{Scaled Meta Reality Labs spatial audio data pipeline by 1000x (10K → 10M scenes/run), enabling production-scale ML training data generation}
+  \resumeItem{Built two LLM-powered internal tools at Meta: a team knowledge aggregating system; and an infra-debugging assistant that resolved 99\% of user support queries autonomously}
   \resumeItem{Reduced distributed ATS sync time by 90\% at impress.ai}
   \resumeItem{Built a transactional email pipeline at impress.ai sustaining 100K+ emails/day on AWS SES/SQS/SNS with automated bounce and spam handling}
   \resumeItem{Owned end-to-end infrastructure build at Highbreed from scratch --- ECS/ECR orchestration, automated deployments, and ELK-based observability and search}
@@ -123,6 +124,8 @@
         \resumeItem{\textbf{DAG-based scene config engine:} Designed and built a generator dependency graph engine enabling controlled parameter variation across large-scale spatial audio simulation runs --- users define interdependent generators in YAML and the engine resolves them into diverse scene configurations at scale; implemented cycle detection, multi-parent resolution, and Kahn's algorithm-based topological traversal}
         \resumeItem{\textbf{21$\times$ scene upload throughput:} Identified remote blob storage I/O as the serial bottleneck; parallelized scene uploads with a thread pool --- 21$\times$ throughput gain (1.16 $\rightarrow$ 24.44 scenes/sec, 95\% latency reduction)}
         \resumeItem{\textbf{Cross-team label propagation:} Built a system preserving time-accurate event metadata through all signal transformations during signal simulation; directly adopted by the Sound Understanding team for Audio Event Detection model training}
+        \resumeItem{\textbf{Team Brain --- LLM-powered knowledge aggregation:} Built an internal system that ingested multiple data sources (Jira, code changes, Google Drive, meeting notes, plans) and synthesized them via LLM into a live team context; automated weekly status summaries via cron and surfaced what every team member was working on without requiring direct communication --- saved 3--4 hrs/week per engineer in async communication overhead}
+        \resumeItem{\textbf{LLM-powered infra debugging assistant:} Built an LLM-backed assistant that diagnosed infrastructure and pipeline configuration failures for the simulation platform; given a failed run, it reasoned over error context, prior known issues, and system configuration to recommend optimal settings and resolution steps --- resolved 99\% of user support queries autonomously, eliminating almost all ad-hoc debugging requests to the team}
       \resumeItemListEnd
 
     \resumeSubheading
@@ -162,7 +165,7 @@
         \textbf{Languages}          & \textbf{Python} (primary), Go, C++, Rust, SQL, JavaScript / TypeScript \\[2pt]
         \textbf{Systems}            & Distributed systems, DAG-based systems, stream processing, concurrent \& parallel programming, producer-consumer pipelines, event-driven architectures, memory-constrained design \\[2pt]
         \textbf{Data}               & Relational databases, Hive, Apache Parquet, DuckDB, columnar storage, time-series data \\[2pt]
-        \textbf{ML \& Audio}        & Audio signal processing; foundational ML (neural networks, backpropagation, random forests, gradient descent) \\[2pt]
+        \textbf{ML \& AI}            & LLMs, RAG pipelines, prompt engineering, document understanding; audio signal processing; foundational ML (neural networks, backpropagation, random forests, gradient descent) \\[2pt]
         \textbf{Tools \& Technologies} & Kafka, Apache Airflow, FastAPI, Django, Docker, Kubernetes, WebSocket, NumPy, Pandas, PyArrow, Redis, Git, Linux, AWS, GCP, Azure \\
       \end{tabular}
     }}
