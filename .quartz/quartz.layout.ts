@@ -1,13 +1,18 @@
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
+import LinksHeader from "./LinksHeader"
 
 // components shared across all pages
 export const sharedPageComponents: SharedLayout = {
   head: Component.Head(),
-  header: [],
+  header: [LinksHeader()],
   afterBody: [],
   footer: Component.Footer({
-    links: {},
+    links: {
+      GitHub: "https://github.com/sarthakvk",
+      LinkedIn: "https://linkedin.com/in/sarthakchaudhary",
+      Email: "mailto:kumar.v.sarthak@gmail.com",
+    },
   }),
 }
 
@@ -38,7 +43,8 @@ export const defaultContentPageLayout: PageLayout = {
     Component.Explorer(),
   ],
   right: [
-    Component.Graph(),
+    // Removing Graph component for now due to too few pages in the vault
+    // Component.Graph()
     Component.DesktopOnly(Component.TableOfContents()),
     Component.Backlinks(),
   ],
