@@ -1,9 +1,6 @@
 ---
 title: Polya's Problem Solving Framework
 ---
-
-
-Last updated at: 2026-04-06
 ## Introduction to Heuristics and the Art of Discovery
 
 The term **Heuristic** (or _heuretic_) refers to a specific branch of study—situated at the intersection of logic, psychology, and philosophy—focused on the methods and rules of discovery and invention. Historically, this "Art of Invention" was championed by luminaries such as **Descartes**, **Leibnitz**, and **Bolzano**, who sought to codify the mental operations required to navigate from an unknown challenge to a verified solution.
