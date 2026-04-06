@@ -15,7 +15,7 @@ const config: QuartzConfig = {
     analytics: null,
     locale: "en-US",
     baseUrl: "sarthakvk.github.io/secondbrain-public",
-    ignorePatterns: ["private", "templates", ".obsidian", ".quartz", ".github"],
+    ignorePatterns: ["private", "templates", ".obsidian", ".quartz", ".github", "README"],
     defaultDateType: "modified",
     theme: {
       fontOrigin: "googleFonts",
@@ -76,7 +76,6 @@ const config: QuartzConfig = {
       Plugin.AliasRedirects(),
       Plugin.ComponentResources(),
       Plugin.ContentPage(),
-      Plugin.FolderPage(),
       Plugin.TagPage(),
       Plugin.ContentIndex({
         enableSiteMap: true,
