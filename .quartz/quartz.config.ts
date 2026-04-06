@@ -1,5 +1,6 @@
 import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
+import * as Component from "./quartz/components"
 
 /**
  * Quartz 4 Configuration
@@ -15,7 +16,7 @@ const config: QuartzConfig = {
     analytics: null,
     locale: "en-US",
     baseUrl: "sarthakvk.github.io/secondbrain-public",
-    ignorePatterns: ["private", "templates", ".obsidian", ".quartz", ".github", "README"],
+    ignorePatterns: ["private", "templates", ".obsidian", ".quartz", ".github", "README.md"],
     defaultDateType: "modified",
     theme: {
       fontOrigin: "googleFonts",
@@ -84,6 +85,7 @@ const config: QuartzConfig = {
       Plugin.Assets(),
       Plugin.Static(),
       Plugin.Favicon(),
+      Plugin.FolderPage({ pageBody: Component.Content() }),
       Plugin.NotFoundPage(),
       // Comment out CustomOgImages to speed up build time
       Plugin.CustomOgImages(),
