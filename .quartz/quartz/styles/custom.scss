@@ -9,7 +9,12 @@ body {
   font-size: 1.08rem;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: 600;
   font-variant: small-caps;
   letter-spacing: 0.04em;
@@ -20,7 +25,8 @@ h2.page-title {
   letter-spacing: normal;
 }
 
-strong, b {
+strong,
+b {
   font-weight: 600;
 }
 
@@ -29,3 +35,31 @@ strong, b {
   margin-bottom: 2.5rem;
 }
 
+abbr {
+  color: var(--secondary);
+  cursor: help;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.16em;
+  text-decoration-color: color-mix(in srgb, var(--secondary) 55%, transparent);
+  transition:
+    color 0.2s ease,
+    text-decoration-color 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--tertiary);
+    text-decoration-color: color-mix(in srgb, var(--tertiary) 65%, transparent);
+    outline: none;
+  }
+}
+
+.abbr-popover > .popover-inner {
+  width: min(24rem, calc(100vw - 2rem));
+  max-height: none;
+  padding: 0.8rem 1rem;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  box-shadow: 6px 6px 24px 0 rgba(0, 0, 0, 0.18);
+}

@@ -3,12 +3,13 @@ import * as Component from "./quartz/components"
 import SocialFooter from "./SocialFooter"
 import ProfilePhoto from "./ProfilePhoto"
 import StickyBreadcrumbs from "./StickyBreadcrumbs"
+import AbbrTooltips from "./AbbrTooltips"
 
 // components shared across all pages
 export const sharedPageComponents: SharedLayout = {
   head: Component.Head(),
   header: [],
-  afterBody: [],
+  afterBody: [AbbrTooltips()],
   footer: SocialFooter(),
 }
 
