@@ -26,6 +26,7 @@ Any `.md` file added at the root of `publish/` (outside `.quartz/`) becomes a pa
 - Custom components go at `.quartz/` root and are imported directly in `quartz.layout.ts`.
 - Prefer `ConditionalRender` in `quartz.layout.ts` over CSS in `custom.scss`.
 - `quartz/static/profile.png` is the source for both the homepage profile photo and the tab icon; tweak `profileImageConfig.ts` to change their shared crop/zoom.
+- <important> if a change is made inside the quads structure, they should be updated in the publish folder node </important>
 
 ## Local preview (requires Node 20+)
 

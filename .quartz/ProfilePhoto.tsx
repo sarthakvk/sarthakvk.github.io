@@ -1,12 +1,13 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./quartz/components/types"
+import { classNames } from "./quartz/util/lang"
 import { joinSegments, pathToRoot } from "./quartz/util/path"
 import { PROFILE_FOCAL_POSITION, PROFILE_ZOOM } from "./profileImageConfig"
 
-const ProfilePhoto: QuartzComponent = ({ fileData }: QuartzComponentProps) => {
+const ProfilePhoto: QuartzComponent = ({ fileData, displayClass }: QuartzComponentProps) => {
   const baseDir = pathToRoot(fileData.slug!)
   const photoPath = joinSegments(baseDir, "static/profile.png")
   return (
-    <div class="profile-photo-container">
+    <div class={classNames(displayClass, "profile-photo-container")}>
       <div class="profile-photo-circle">
         <img src={photoPath} alt="Sarthak Kumar" class="profile-photo" />
       </div>
