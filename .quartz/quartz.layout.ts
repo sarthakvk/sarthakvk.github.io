@@ -29,6 +29,10 @@ export const defaultContentPageLayout: PageLayout = {
       condition: (page) => page.fileData.slug !== "index",
     }),
     Component.TagList(),
+    Component.ConditionalRender({
+      component: ProfilePhoto(),
+      condition: (page) => page.fileData.slug === "index",
+    }),
   ],
   left: [
     Component.PageTitle(),
@@ -48,10 +52,12 @@ export const defaultContentPageLayout: PageLayout = {
     }),
   ],
   right: [
-    Component.ConditionalRender({
-      component: ProfilePhoto(),
-      condition: (page) => page.fileData.slug === "index",
-    }),
+    Component.DesktopOnly(
+      Component.ConditionalRender({
+        component: ProfilePhoto(),
+        condition: (page) => page.fileData.slug === "index",
+      }),
+    ),
     // Removing Graph component for now due to too few pages in the vault
     // Component.Graph()
     Component.DesktopOnly(Component.TableOfContents()),

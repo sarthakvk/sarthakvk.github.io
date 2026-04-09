@@ -1,4 +1,5 @@
 @use "./base.scss";
+@use "./variables.scss" as *;
 
 // put your custom CSS here!
 .center > hr {
@@ -60,4 +61,19 @@ abbr {
  */
 :root[saved-theme="dark"] article img[src$=".svg"] {
   filter: invert(1) hue-rotate(180deg);
+}
+
+// Profile photo breakpoint control:
+// Desktop (≥1200px): show in right sidebar, hide in beforeBody
+// Tablet + Mobile (<1200px): show in beforeBody (above content), hide in right sidebar
+.page-header .profile-photo-container {
+  @media all and ($desktop) {
+    display: none;
+  }
+}
+
+.sidebar.right .profile-photo-container {
+  @media all and ($tablet) {
+    display: none;
+  }
 }
