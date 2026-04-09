@@ -132,15 +132,14 @@ Each simulation node receives a batch of scene paths and is responsible for thre
 
 1. **Simulating scenes and uploading outputs:** The node creates a process pool where each worker receives a single scene path. The worker loads the scene definition from blob storage, runs the simulation, and uploads the generated audio and IR files as they are produced — not after the simulation finishes. Each worker maintains a small upload thread pool so that I/O-bound uploads overlap with CPU-bound simulation. By the time a worker finishes a scene, all of its output artifacts are already in blob storage. The worker then pushes the scene's metadata onto a shared metadata queue.
 
-2. **Batched metadata writes:** A dedicated writer in the main process drains the metadata queue in batches. Once a batch reaches the configured size, the writer concatenates the metadata rows and appends them as a single Parquet file to Hive. All writes within a node go to a single Parquet file, which avoids distributed coordination between nodes during the run.
+2. **Batched metadata writes:** As workers complete scenes, they push metadata onto a local queue. A dedicated consumer batches these and writes rows into a local Parquet file on the node.
 
-3. **Staged commits for atomic publication:** Once all scenes on the node are complete, the writer flushes any remaining metadata from the queue and issues a staged write to Hive. This produces a staged commit ID, which the node passes back to the Simulation Manager. The manager collects staged commit IDs from all nodes and performs a single two-phase commit, making the full dataset visible atomically.
+3. **Signaling completion:** Once all scenes on the node are complete, the writer flushes any remaining metadata from the queue, closes the local Parquet file, and uploads it to blob storage in a single transfer. It then signals completion to the Simulation Manager. The manager waits for all nodes to finish before publishing the dataset ([[#4.6 Metadata Pipeline and Atomic Publication|§4.6]]).
 
 **Key design decisions:**
 
 - **Why upload during simulation instead of after?** Buffering outputs until a scene completes would require holding all generated files in memory or on local disk. Streaming uploads as files are produced keeps memory usage constant per worker, which matters when workers are processing long signals or high sample rates.
-- **Why write one Parquet file per node?** Distributed writes to a shared Hive table would require coordination (locking or conflict resolution) across nodes. Isolating writes to one file per node eliminates that entirely. The trade-off — many small files — is addressed later by compaction (§4.8).
-- **Why stage commits instead of committing directly?** Direct commits from each node would make partial results visible before the full run completes. Staging lets the manager gate publication on all nodes finishing successfully, so downstream consumers never see an incomplete dataset.
+- **Why write one Parquet file per node?** Having each node produce its own file means no cross-node coordination during the run — no locking, no conflict resolution. The trade-off — many small files — is resolved during the Hive upload step ([[#4.6 Metadata Pipeline and Atomic Publication|§4.6]]).
 
 ### 4.5 Output Storage Strategy
 
@@ -175,15 +174,25 @@ A scene directory is not considered complete just because files exist in it. Wor
 - **File volume stays manageable per directory.** With outputs nested under scene → listener → type, no single directory accumulates hundreds of thousands of files, which avoids performance degradation on listing operations during recovery scans.
 
 ### 4.6 Metadata Pipeline and Atomic Publication
+![[metadata_handling.svg]]
 
-#TODO Explain streaming metadata writes, distributed writers, staged commits, and the final atomic publication step for the Hive table.
+Each node accumulates metadata to local disk during its run, then uploads a single Parquet file to blob storage when done. The Simulation Manager then compacts these files and loads them into Hive to make the dataset queryable.
+
+**Writing metadata to blob storage**
+
+Each simulation node writes metadata rows to a local Parquet file as scenes complete. A queue decouples workers from the writer — metadata flows out without blocking simulation. When the node finishes, the file is closed and uploaded to blob storage in one transfer.
+
+**Compaction and Hive upload**
+
+Once all nodes finish, the Simulation Manager registers the raw Parquet files as a temporary external Hive table, then runs a single Presto query that reads from it and inserts into the target table. Presto compacts the data into optimally-sized files and writes them as a single partition. The temporary table and raw files are then cleaned up. The target Hive table is ready for querying — either in full, or not at all.
+
+**Why this works**
+
+Writing locally avoids per-row network calls during the run, keeping metadata writes cheap. The single upload at the end is predictable and bounded. A single Presto query then handles compaction and loading — no custom compactor needed. A recovered node re-runs its scenes and re-uploads its Parquet file ([[#4.7 Failure Handling and Recovery|§4.7]]).
 
 ### 4.7 Failure Handling and Recovery
 
 #TODO Explain partial failures, retries, recovery semantics, and how the pipeline avoids publishing incomplete datasets.
 
-### 4.8 Compaction and Dataset Readiness
-
-#TODO Explain post-write compaction, file sizing, and how the dataset is prepared for efficient downstream training and querying.
 ## 5. Lessons at Scale
 #TODO Share your learning, QTA takeaways, etc. Closing of the blog. 

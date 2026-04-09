@@ -114,15 +114,8 @@
     {Software Engineer (Contractor)}{}
       {Built spatial audio simulation infrastructure at Meta Reality Labs --- a pipeline that simulates sound propagation across millions of acoustic scene configurations to generate synthetic training data for audio ML models.}
       \resumeItemListStart
-        \resumeItem{\textbf{Scaled scene simulation pipeline from prototype to production: 10K $\rightarrow$ 10M scenes/run}}
-        \resumeItemListStart
-          \resumeItem{\textbf{Memory-bounded scene generation:} Eliminated scene count ceiling with async incremental batch uploads to blob storage with backpressure, fully decoupling generation from upload}
-          \resumeItem{\textbf{Decoupled result offloading:} Eliminated worker memory accumulation by streaming simulation results to Hive in batches via a per-worker async uploader, keeping workers continuously unblocked}
-          \resumeItem{\textbf{Distributed write coordination:} Eliminated partition explosion at scale by routing all workers to write distinct files under a shared partition directory, with a coordinator performing a single atomic commit across all workers via two-phase commit}
-          \resumeItem{\textbf{Post-commit compaction:} Coordinator runs an \texttt{INSERT OVERWRITE} via Presto after the final commit to consolidate all worker files into optimal partition sizes for read performance}
-        \resumeInnerItemListEnd
-        \resumeItem{\textbf{DAG-based scene config engine:} Designed and built a generator dependency graph engine enabling controlled parameter variation across large-scale spatial audio simulation runs --- users define interdependent generators in YAML and the engine resolves them into diverse scene configurations at scale; implemented cycle detection, multi-parent resolution, and Kahn's algorithm-based topological traversal}
-        \resumeItem{\textbf{21$\times$ scene upload throughput:} Identified remote blob storage I/O as the serial bottleneck; parallelized scene uploads with a thread pool --- 21$\times$ throughput gain (1.16 $\rightarrow$ 24.44 scenes/sec, 95\% latency reduction)}
+        \resumeItem{\textbf{Scaled scene simulation pipeline from prototype to production: 10K $\rightarrow$ 10M scenes/run} --- Redesigned the pipeline to eliminate memory, storage, and metadata bottlenecks that capped throughput at 10K scenes; distributed simulation across parallel nodes with streaming I/O and coordination-free metadata collection, enabling atomic dataset publication at scale}
+        \resumeItem{\textbf{DAG-based scene configuration engine:} Enabled high-variance, fine-grained scene generation across millions of configurations without manual authoring --- built a dependency graph over user-defined generators that controls per-scene parameter variation at scale}
         \resumeItem{\textbf{Cross-team label propagation:} Built a system preserving time-accurate event metadata through all signal transformations during signal simulation; directly adopted by the Sound Understanding team for Audio Event Detection model training}
         \resumeItem{\textbf{Team Brain --- LLM-powered knowledge aggregation:} Built an internal system that ingested multiple data sources (Jira, code changes, Google Drive, meeting notes, plans) and synthesized them via LLM into a live team context; automated weekly status summaries via cron and surfaced what every team member was working on without requiring direct communication --- saved 3--4 hrs/week per engineer in async communication overhead}
         \resumeItem{\textbf{LLM-powered infra debugging assistant:} Built an LLM-backed assistant that diagnosed infrastructure and pipeline configuration failures for the simulation platform; given a failed run, it reasoned over error context, prior known issues, and system configuration to recommend optimal settings and resolution steps --- resolved 99\% of user support queries autonomously, eliminating almost all ad-hoc debugging requests to the team}
@@ -133,9 +126,9 @@
       {Principal Software Engineer}{}
       {Freelancing marketplace platform connecting businesses with vetted professionals.}
       \resumeItemListStart
-        \resumeItem{Returned to take full technical ownership; designed and deployed the entire AWS infrastructure from scratch --- ECS/ECR container orchestration with automated service definitions, independent service releases, and horizontal scalability}
-        \resumeItem{Set up ELK stack serving dual purpose: centralized observability and full-text search; built a periodic sync layer between Elasticsearch and the relational DB to keep search indexes eventually consistent and fast}
-        \resumeItem{Mentored 3 engineers through structured code reviews and engineering best practices}
+        \resumeItem{\textbf{Owned full technical build from zero} --- designed and deployed production AWS infrastructure with container orchestration, independent service releases, and horizontal scalability}
+        \resumeItem{\textbf{Unified observability and full-text search} into a single ELK deployment with an eventually-consistent sync layer against the relational DB}
+        \resumeItem{\textbf{Mentored 3 engineers} through structured code reviews and engineering best practices}
       \resumeItemListEnd
 
     \resumeSubheading
@@ -143,8 +136,8 @@
       {Software Engineer}{}
       {AI-powered end-to-end recruitment automation platform --- candidate screening, assessment, and engagement via conversational AI.}
       \resumeItemListStart
-        \resumeItem{Re-engineered a distributed data sync with client-hosted ATS systems; identified synchronous nested query loops as the bottleneck and parallelized every processing stage --- 90\% reduction in sync time}
-        \resumeItem{Built a high-throughput transactional email system using AWS SES, SQS, and SNS sustaining 100K+ emails/day with automated bounce and spam handling}
+        \resumeItem{\textbf{Reduced distributed ATS sync time by 90\%} --- re-engineered the sync pipeline with client-hosted systems by parallelizing every processing stage}
+        \resumeItem{\textbf{Sustained 100K+ transactional emails/day} --- built the pipeline on AWS SES/SQS/SNS with automated bounce and spam handling}
       \resumeItemListEnd
 
     \resumeSubheading
@@ -152,7 +145,7 @@
       {Software Engineer}{}
       {Freelancing marketplace platform connecting businesses with vetted professionals.}
       \resumeItemListStart
-        \resumeItem{Built Django-based backend services and containerized the application stack with Docker; established CI/CD pipelines for automated testing and deployment}
+        \resumeItem{\textbf{Established automated CI/CD and containerized deployments} --- built Django backend services and Dockerized the application stack}
       \resumeItemListEnd
 
   \resumeSubHeadingListEnd

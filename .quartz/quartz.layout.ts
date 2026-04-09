@@ -43,7 +43,9 @@ export const defaultContentPageLayout: PageLayout = {
         { Component: Component.ReaderMode() },
       ],
     }),
-    Component.Explorer(),
+    Component.Explorer({
+      filterFn: (node) => node.slugSegment !== "tags" && node.slugSegment !== "assets",
+    }),
   ],
   right: [
     Component.ConditionalRender({
@@ -72,7 +74,9 @@ export const defaultListPageLayout: PageLayout = {
         { Component: Component.Darkmode() },
       ],
     }),
-    Component.Explorer(),
+    Component.Explorer({
+      filterFn: (node) => node.slugSegment !== "tags" && node.slugSegment !== "assets",
+    }),
   ],
   right: [],
 }
