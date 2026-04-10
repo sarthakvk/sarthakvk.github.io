@@ -1,5 +1,6 @@
 ---
 title: Polya's Problem Solving Framework
+draft: "true"
 ---
 ## Introduction to Heuristics and the Art of Discovery
 

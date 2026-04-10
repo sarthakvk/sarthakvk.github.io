@@ -149,6 +149,7 @@ Each simulation worker writes output artifacts directly to blob storage as they 
 
 ```
 <scene_start>_<scene_end>/
+  _SUCCESS
   scene_<index>/
     <listener_name>/
       RIR/
@@ -165,7 +166,7 @@ Within a scene, outputs are organized by listener, then split into impulse respo
 
 **Completion markers:**
 
-A scene directory is not considered complete just because files exist in it. Workers write outputs into the directory as simulation progresses, but a crash mid-scene would leave a partial result. To distinguish complete scenes from partial ones, each worker writes a `_SUCCESS` marker file into the scene directory after all outputs for that scene have been uploaded. Only directories containing this marker are treated as valid. This convention is what makes fault-tolerant recovery possible ([[#4.7 Failure Handling and Recovery|§4.7]]).
+A range directory is not considered complete just because files exist in it. Workers write outputs into the directory as simulation progresses, but a crash mid-scene would leave a partial result, and complete loss of metadata. To distinguish complete scenes from partial ones, each worker writes a `_SUCCESS` marker file into the scene directory after all outputs and metadata is uploaded to the blob storage. Only directories containing this marker are treated as valid. This convention is what makes fault-tolerant recovery possible ([[#4.7 Failure Handling and Recovery|§4.7]]).
 
 **Why this layout works at scale:**
 
@@ -191,8 +192,8 @@ Once all nodes finish, the Simulation Manager registers the raw Parquet files as
 Writing locally avoids per-row network calls during the run, keeping metadata writes cheap. The single upload at the end is predictable and bounded. A single Presto query then handles compaction and loading — no custom compactor needed. A recovered node re-runs its scenes and re-uploads its Parquet file ([[#4.7 Failure Handling and Recovery|§4.7]]).
 
 ### 4.7 Failure Handling and Recovery
+ if any component in the simulation pipeline goes down for some reason, we want our simulation pipeline to recover from that and still be able to retry and succeed.  we do this by adding failure handling and recovery to the simulation manager and the simulation nodes.
 
-#TODO Explain partial failures, retries, recovery semantics, and how the pipeline avoids publishing incomplete datasets.
 
 ## 5. Lessons at Scale
 #TODO Share your learning, QTA takeaways, etc. Closing of the blog. 
