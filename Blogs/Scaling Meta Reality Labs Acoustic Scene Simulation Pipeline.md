@@ -11,10 +11,17 @@ Layer on top of that any ambient noise in the vicinity, like a dog barking, an a
 
 **Acoustic Scene Simulation is exactly that: a computational reproduction of this real-world phenomenon.** You take a raw audio signal and simulate how it would sound within a specific acoustic configuration — a particular room, environment, listener position, and noise profile.
 
-There's a lot of depth to unpack here (room impulse responses, HRTFs, convolution-based rendering, and more), but for the purposes of this post, we'll leave the physics there and focus on the infrastructure. If you want to go deeper on the acoustics side, check out [_link here_].
+There's a lot of depth to unpack here (room impulse responses, HRTFs, convolution-based rendering, and more), but for the purposes of this post, I'll leave the physics there and focus on the infrastructure. If you want to go deeper on the acoustics side, check out [_link here_].
 
 ## 2. Why Simulation Data is Essential for Audio ML?
-#TODO  Share how collecting real-world data and managing the parameters is not sustainable for large scale and why large data is needed with diverse samples and configuration to train different audio machine learning models like speech enhancement, speech-to-text, etc.
+
+Audio ML models — speech enhancement, noise suppression, speech-to-text — require training data that spans a huge range of acoustic conditions: different room sizes, reverb profiles, noise types, microphone placements, and listener positions. The model needs to have seen it all, or close to it, to generalize.
+
+Real-world recordings cannot provide this at scale. Every recording requires physical setup, controlled conditions, and careful labeling. You cannot exhaustively vary room geometry or listener position across millions of samples in a studio.
+
+**Simulation solves both problems.** You define the acoustic configuration programmatically, run the simulation, and get the output audio alongside the exact ground truth by construction. Want 10 million rooms with randomized geometry, source count, and noise profiles? That is a config change, not a logistics problem.
+
+This is why large-scale simulation pipelines exist: real data is scarce and expensive; simulated data is cheap and arbitrarily diverse. The challenge is making that generation fast and tractable at the scale Audio ML teams actually need.
 
 ## 3. The Scaling Problem
 
@@ -85,14 +92,14 @@ That density is what makes a single row reach **~30 KB**.
 ---
 ## 4 The Architecture
 
-In production, this pipeline runs on **FB Learner**, Meta's internal DAG-based job scheduling and ML workflow platform. In this section, I abstract that layer away and focus on the simulation pipeline itself.
+In production, this pipeline runs on **[FBLearner](https://engineering.fb.com/2016/05/09/core-infra/introducing-fblearner-flow-facebook-s-ai-backbone/)**, Meta's internal DAG-based job scheduling and ML workflow platform. In this section, I abstract that layer away and focus on the simulation pipeline itself.
 
 ### 4.1 Overview
 
 ![[spatial_simulation_c2.svg]]
-At a high level, the architecture separates orchestration from execution. A central **Simulation Manager** prepares and coordinates work, while many **Simulation Nodes** execute that work in parallel. Heavy simulation outputs are written to blob storage, and structured metadata is written to Hive so the final dataset remains queryable and usable for training.
+At a high level, the architecture separates orchestration from execution. A central **Simulation Manager** prepares and distributes work, while many **Simulation Nodes** execute that work in parallel. Heavy simulation outputs are written to blob storage, and structured metadata is written to Hive so the final dataset remains queryable and usable for training.
 
-The **Simulation Manager** is the control plane for the pipeline. It validates the user configuration, expands that configuration into simulation scenes, persists those scene definitions, and submits work for execution across simulation nodes. It also coordinates publication of the metadata table so the dataset becomes visible only when the full run is ready.
+The **Simulation Manager** is the control plane for the pipeline. It validates the user configuration, expands that configuration into simulation scenes, persists those scene definitions, and submits work for execution across simulation nodes. It also coordinates publication of the metadata table through **Presto** so the dataset becomes visible only when the full run is ready.
 
 Each **Simulation Node** is the execution plane. It consumes the scenes assigned to it, runs simulations in parallel, writes the generated audio and impulse response artifacts to blob storage, and emits metadata rows describing those outputs. This keeps expensive CPU work distributed while allowing storage and metadata generation to happen continuously alongside simulation.
 
@@ -118,7 +125,7 @@ A simulation run starts with a YAML configuration. From there, the pipeline move
 
 1. **Generating scenes with back-pressure:** the scene factory resolves the configuration and starts materialising scenes into a bounded queue. Once the queue is full, scene generation pauses until space becomes available again. This prevents generation from running too far ahead and exhausting memory.
 2. **Uploading scenes to blob storage:** the uploader drains the queue and uploads scene definitions to blob storage using a thread pool. Since uploads are I/O-bound, parallelism improves throughput and keeps scene persistence from becoming a bottleneck.
-3. **Batching scenes for simulation:** as scenes are uploaded, their paths are collected into batches. Once a batch is ready, a simulation node is scheduled to process it. The operator running on that machine then simulates the full scene list. This keeps scene generation, upload, and simulation moving in parallel.
+3. **Batching scenes for simulation:** Scene paths are collected as uploads complete. When all scenes are ready, the paths are batched and dispatched to simulation nodes for processing.
 
 **Key reasons behind this design:**
 
@@ -149,7 +156,6 @@ Each simulation worker writes output artifacts directly to blob storage as they 
 
 ```
 <scene_start>_<scene_end>/
-  _SUCCESS
   scene_<index>/
     <listener_name>/
       RIR/
@@ -164,10 +170,6 @@ Each simulation node receives a non-overlapping range of scene indices. That ran
 
 Within a scene, outputs are organized by listener, then split into impulse responses (RIR) and signal outputs (SIG). RIR contains exactly two files — anechoic and reverberant — while SIG contains one file per mixture defined in the user configuration. Because mixture names are user-defined and unique within a scene, and listeners are unique within a scene, every file path in the tree is unique by construction.
 
-**Completion markers:**
-
-A range directory is not considered complete just because files exist in it. Workers write outputs into the directory as simulation progresses, but a crash mid-scene would leave a partial result, and complete loss of metadata. To distinguish complete scenes from partial ones, each worker writes a `_SUCCESS` marker file into the scene directory after all outputs and metadata is uploaded to the blob storage. Only directories containing this marker are treated as valid. This convention is what makes fault-tolerant recovery possible ([[#4.7 Failure Handling and Recovery|§4.7]]).
-
 **Why this layout works at scale:**
 
 - **No coordination on writes.** Range partitioning means nodes write to disjoint subtrees. There is no locking, no conflict resolution, and no shared state between writers.
@@ -175,7 +177,7 @@ A range directory is not considered complete just because files exist in it. Wor
 - **File volume stays manageable per directory.** With outputs nested under scene → listener → type, no single directory accumulates hundreds of thousands of files, which avoids performance degradation on listing operations during recovery scans.
 
 ### 4.6 Metadata Pipeline and Atomic Publication
-![[metadata_handling.svg]]
+![[publish/assets/metadata_handling.svg]]
 
 Each node accumulates metadata to local disk during its run, then uploads a single Parquet file to blob storage when done. The Simulation Manager then compacts these files and loads them into Hive to make the dataset queryable.
 
@@ -192,8 +194,14 @@ Once all nodes finish, the Simulation Manager registers the raw Parquet files as
 Writing locally avoids per-row network calls during the run, keeping metadata writes cheap. The single upload at the end is predictable and bounded. A single Presto query then handles compaction and loading — no custom compactor needed. A recovered node re-runs its scenes and re-uploads its Parquet file ([[#4.7 Failure Handling and Recovery|§4.7]]).
 
 ### 4.7 Failure Handling and Recovery
- if any component in the simulation pipeline goes down for some reason, we want our simulation pipeline to recover from that and still be able to retry and succeed.  we do this by adding failure handling and recovery to the simulation manager and the simulation nodes.
+I've only talked about the happy path till now, let's see into how the system should behave when things go wrong.
 
+A quick note about **[FBLearner](https://engineering.fb.com/2016/05/09/core-infra/introducing-fblearner-flow-facebook-s-ai-backbone/)**: If a node goes down, it will be automatically restarted from the beginning with the same input, so the pipeline design should take into account that the nodes can be restarted and if possible the work should be resumed from the last failure
+ 
+**Simulation Manager Failure Handling** Scene Generation: If the Simulation Manager goes down during scene generation, recovery is straightforward — since generation is deterministic, we can simply restart from the beginning. For uploads, scene filenames embed the scene index, so we can pinpoint the last successfully uploaded scene and resume from there, skipping what's already in blob storage.
 
-## 5. Lessons at Scale
-#TODO Share your learning, QTA takeaways, etc. Closing of the blog. 
+**Simulation Node Failure Handling**  If a Simulation Node crashes mid-run, the simplest recovery is to restart the simulation from scratch. This works well because simulations are already highly distributed — the duplicated work per failure is minimal. It also avoids the complexity of checkpointing metadata across failures, which would otherwise add latency to every run, not just the failing ones.
+
+---
+
+This pipeline replaced an earlier tool that researchers were using to generate simulation data, one that topped out at around a million scenes per run and lacked the configuration flexibility teams actually needed. The redesign was validated at 10 million scenes, with a configuration model expressive enough to cover the variance Audio ML training demands. The architecture scales beyond that — there is no fixed ceiling: simulation nodes scale horizontally with no cross-node coordination, metadata writes stay local until the run completes, and storage is partitioned by design. The hard part was never the simulation itself — it was designing the infrastructure around it so that scale is a dial, not a wall.
