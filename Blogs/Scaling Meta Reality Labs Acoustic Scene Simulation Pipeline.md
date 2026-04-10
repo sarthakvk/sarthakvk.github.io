@@ -177,7 +177,7 @@ Within a scene, outputs are organized by listener, then split into impulse respo
 - **File volume stays manageable per directory.** With outputs nested under scene → listener → type, no single directory accumulates hundreds of thousands of files, which avoids performance degradation on listing operations during recovery scans.
 
 ### 4.6 Metadata Pipeline and Atomic Publication
-![[publish/assets/metadata_handling.svg]]
+![[metadata_handling.svg]]
 
 Each node accumulates metadata to local disk during its run, then uploads a single Parquet file to blob storage when done. The Simulation Manager then compacts these files and loads them into Hive to make the dataset queryable.
 
