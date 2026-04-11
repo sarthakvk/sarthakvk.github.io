@@ -4,7 +4,6 @@ title: Blogs
 
 Essays and notes worth sharing.
 
-| Post                                                                    | Summary                                                                                            |
-| ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| [[Polyas Problem-Solving Framework\|Polya's Problem-Solving Framework]] | Polya's four-phase framework for mathematical problem-solving — understand, plan, execute, review. |
-| [[Scaling Meta Reality Labs Acoustic Scene Simulation Pipeline]]        |                                                                                                    |
+| Post                                                             | Summary |
+| ---------------------------------------------------------------- | ------- |
+| [[Scaling Meta Reality Labs Acoustic Scene Simulation Pipeline]] | How a simulation pipeline was redesigned to scale from ~1M to 10M scenes — covering compute distribution, storage layout, metadata coordination, and failure recovery. |
