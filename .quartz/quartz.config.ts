@@ -14,7 +14,10 @@ const config: QuartzConfig = {
     pageTitleSuffix: " | Sarthak Kumar",
     enableSPA: true,
     enablePopovers: true,
-    analytics: null,
+    analytics: {
+      provider: "goatcounter",
+      websiteId: "sarthakvk",
+    },
     locale: "en-US",
     baseUrl: "sarthakvk.github.io",
     ignorePatterns: ["private", "templates", ".obsidian", ".quartz/**", ".github", "README.md", "publish.md"],
