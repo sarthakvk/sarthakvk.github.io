@@ -11,7 +11,7 @@ Layer on top of that any ambient noise in the vicinity, like a dog barking, an a
 
 **Acoustic Scene Simulation is exactly that: a computational reproduction of this real-world phenomenon.** You take a raw audio signal and simulate how it would sound within a specific acoustic configuration — a particular room, environment, listener position, and noise profile.
 
-There's a lot of depth to unpack here (room impulse responses, HRTFs, convolution-based rendering, and more), but for the purposes of this post, I'll leave the physics there and focus on the infrastructure. If you want to go deeper on the acoustics side, check out [_link here_].
+There's a lot of depth to unpack here (room impulse responses, HRTFs, convolution-based rendering, and more), but for the purposes of this post, I'll leave the physics there and focus on the infrastructure. If you want to go deeper on the acoustics side, check out [this primer on room impulse response simulation and HRTF interpolation](https://www.mathworks.com/help/audio/ug/room-impulse-response-simulation-with-image-source-method-and-hrtf-interpolation.html).
 
 ## 2. Why Simulation Data is Essential for Audio ML?
 
