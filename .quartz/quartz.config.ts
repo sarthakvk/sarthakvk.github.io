@@ -20,7 +20,7 @@ const config: QuartzConfig = {
     },
     locale: "en-US",
     baseUrl: "sarthakvk.github.io",
-    ignorePatterns: ["private", "templates", ".obsidian", ".quartz/**", ".github", "README.md", "publish.md"],
+    ignorePatterns: ["private", "templates", ".obsidian", ".quartz/**", ".github", "README.md", "publish.md", "resume/index.md"],
     defaultDateType: "modified",
     theme: {
       fontOrigin: "googleFonts",
