@@ -1,6 +1,10 @@
 ---
 title: Scaling Meta Reality Labs Acoustic Scene Simulation Pipeline
 ---
+Audio ML models at Meta Reality Labs need synthetic training data across millions of acoustic environments — real recordings alone can't provide that scale. This post covers how I built a distributed simulation pipeline to generate 10 million scenes worth of audio data, turning what would be ~20 years of compute and petabytes of output into a tractable, parallelized workflow.
+
+---
+
 ## 1. What is Acoustic Scene Simulation?
 
 In high school physics, we learned that sound is a wave, and waves reflect off surfaces. So when you hear a sound, it is not just the direct wave traveling from the <abbr title="an object producing sound e.g speaker or someone talking">_source_</abbr> to your ears. It also includes reflections bouncing off the walls, floor, ceiling, and every object in between. What you ultimately perceive is the sum of all of these paths.
