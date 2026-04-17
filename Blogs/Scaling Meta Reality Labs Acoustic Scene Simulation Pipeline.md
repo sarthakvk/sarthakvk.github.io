@@ -1,5 +1,6 @@
 ---
 title: Scaling Meta Reality Labs Acoustic Scene Simulation Pipeline
+draft: "true"
 ---
 Audio ML models at Meta Reality Labs need synthetic training data across millions of acoustic environments — real recordings alone can't provide that scale. This post covers how I built a distributed simulation pipeline to generate 10 million scenes worth of audio data, turning what would be ~20 years of compute and petabytes of output into a tractable, parallelized workflow.
 
