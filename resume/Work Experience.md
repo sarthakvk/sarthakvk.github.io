@@ -66,7 +66,7 @@ This version removes internal codenames and uses external-facing terminology.
 - The assistant autonomously resolved **99\% of support/debugging queries**, removing most ad-hoc troubleshooting load from the engineering team.
 
 ## Technical Focus Areas (for JD matching)
-- `Python`
+- `Python`, `PySpark`, `Airflow`, `Hive`
 - `Distributed systems`
 - `Data pipelines`
 - `Workflow orchestration`
